@@ -1,0 +1,15 @@
+guest → candidate / employer → admin
+
+
+
+✅ SPRINT 1 DELIVERABLE (Portfolio Gold)
+✔ Role-based users
+✔ Secure backend guards
+✔ Role-aware frontend
+✔ Separate dashboards
+
+
+🔜 Sprint 2 Preview (tease)
+
+NEXT
+💼 EPIC 3: Job Management (Core)
