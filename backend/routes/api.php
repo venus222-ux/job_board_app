@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -31,3 +32,14 @@ Route::middleware(['auth:api', 'throttle:60,1'])->group(function () {
     Route::delete('/profile', [AuthController::class, 'destroyProfile']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
 });
+
+Route::get('/companies', [CompanyController::class, 'index']);
+Route::get('/companies/{slug}', [CompanyController::class, 'show']);
+
+Route::middleware(['auth:api', 'role:employer'])->group(function () {
+    Route::get('/employer/companies', [CompanyController::class, 'employerIndex']);
+    Route::post('/employer/companies', [CompanyController::class, 'store']);
+    Route::put('/employer/companies/{id}', [CompanyController::class, 'update']); // <- change here
+    Route::delete('/employer/companies/{id}', [CompanyController::class, 'destroy']);
+});
+

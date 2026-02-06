@@ -1,0 +1,36 @@
+🧱 High-Level Architecture
+React (Vite + TS)
+ └── Zustand (state)
+ └── Axios (API)
+ └── Echo (real-time)
+
+Laravel 12 API
+ ├── MySQL (users, jobs, applications)
+ ├── MongoDB (logs, views, activity)
+ ├── Redis (cache, queues)
+ ├── Elasticsearch (search)
+ ├── Pusher (real-time)
+ └── JWT Auth
+
+📦 Data Design (important for interviews)
+
+
+MySQL
+users
+companies
+jobs
+job_applications
+job_categories
+skills
+saved_jobs
+
+MongoDB
+job_views
+search_logs
+user_activity
+application_events
+
+Elasticsearch
+jobs index
+autocomplete
+geo queries (optional)

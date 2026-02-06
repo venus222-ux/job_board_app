@@ -1,0 +1,30 @@
+
+////
+MongoDB, Redis, ElasticSearch, Pusher, virtualizer,  ?
+
+
+Front page fetch the recommended companies based on user profession
+When user click on a company see all listed jobs
+User can apply to a job. a email is send to the Requiter can see the applications for the job
+and to the user for conformation
+Requiter can see the applications cv for the job
+User can see the history of job applications and edit his cv
+Requiter ca crud companies and switch between then. online and offline of a job.
+User can filter the jobs: search, date, relevance, city, department.
+Admin dashboard: can ban/delete a company/user/employ, view stats
+Polish UI
+
+
+
+Done: 
+1. Requiter CRUD companies, dashboard, One employer → multiple companies. 
+2.
+
+
+
+/*MEGA ADVANCED:
+One employer → multiple companies:
+Realistic for enterprise employers who may manage multiple companies or brands.
+Scales well if you later add roles per company, multiple HR managers, or advanced reporting.
+Flexible for complex business needs.
+*/

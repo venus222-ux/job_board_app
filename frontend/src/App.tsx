@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgetPassword";
@@ -14,6 +13,8 @@ import { useStore } from "./store/useStore";
 import EmployerDashboard from "./pages/Dashboard/EmployerDashboard";
 import CandidateDashboard from "./pages/Dashboard/CandidateDashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import CompaniesList from "./pages/Company/CompaniesList";
+import CompanyPage from "./pages/Company/CompanyPage";
 
 const App = () => {
   const { theme, isAuth, role, startTokenRefreshLoop } = useStore();
@@ -65,6 +66,10 @@ const App = () => {
 
         {/* Catch-all route */}
         <Route path="*" element={<NotFound />} />
+
+        {/*Public routes*/}
+        <Route path="/companies" element={<CompaniesList />} />
+        <Route path="/companies/:slug" element={<CompanyPage />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
