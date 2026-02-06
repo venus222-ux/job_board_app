@@ -77,9 +77,7 @@
 
 ---
 
-## ⏭️ Next Milestone
-
-### 💼 EPIC 3 — Job Management (Core Features)
+### ✅ Sprint 3  — Job Management (Core Features)
 
 * Job CRUD
 * Draft & published jobs
@@ -88,6 +86,15 @@
 * Search & filtering integration
 
 ---
+
+## ⏭️ Next Milestone
+
+🔍 EPIC 4: Search & Filtering (🔥 big value)
+
+
+
+
+
 
 ## 🧠 Architecture Highlights
 
