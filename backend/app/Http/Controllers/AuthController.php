@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Notifications\ResetPasswordNotification;
+use App\Models\Mongo\ActivityLog;
+
 
 class AuthController extends Controller
 {
@@ -46,6 +48,16 @@ class AuthController extends Controller
         $user = Auth::guard('api')->user();
         Cache::put("user-is-online-{$user->id}", true, now()->addMinutes(5));
 
+        // ✅ Mongo Log
+        ActivityLog::create([
+          'user_id' => $user->id,
+          'type' => 'auth',
+          'action' => 'login',
+          'ip' => $request->ip(),
+          'user_agent' => $request->userAgent(),
+          'created_at' => now()
+        ]);
+
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
@@ -66,7 +78,15 @@ public function refresh() {
 
     // --- LOGOUT ---
     public function logout() {
-        $user = Auth::guard('api')->user();
+      $user = Auth::guard('api')->user();
+
+        ActivityLog::create([
+         'user_id' => $user->id,
+         'type' => 'auth',
+         'action' => 'logout',
+         'created_at' => now()
+       ]);
+
         Cache::forget("user-is-online-{$user->id}");
         Auth::guard('api')->logout();
 

@@ -1,104 +1,118 @@
-## 🧱 Tech Stack Overview
+```markdown
+# JobBoard Platform 🚀
 
-### Frontend
+A modern, full-stack job board application built with React and Laravel, 
+featuring real-time updates, advanced search capabilities, and role-based access control.
 
-* **React** (Vite + TypeScript)
-* **Zustand** — global state management
-* **Axios** — API communication
-* **Laravel Echo** — real-time events
-* **Bootstrap** — responsive UI
+## 🏗️ High-Level Architecture
 
-### Backend
+### Frontend Stack
+```
+React 18 (Vite + TypeScript)
+├── Zustand (State Management)
+├── Axios (HTTP Client)
+└── Laravel Echo (Real-time Updates)
+```
 
-* **Laravel 12** (API-first architecture)
-* **JWT Authentication** — secure stateless auth
-* **Role-based Access Control** (Admin / Employer / Candidate)
+### Backend Stack
+```
+Laravel 12 API
+├── MySQL (Users, Jobs, Applications)
+├── MongoDB (Logs, Views, Activity)
+├── Redis (Cache & Queues - Email notifications)
+├── Elasticsearch (Search Engine)
+├── Pusher (Real-time Events)
+└── JWT Authentication
+```
 
-### Databases & Infrastructure
-
-* **MySQL** — core relational data
-* **MongoDB** — analytics & activity logs
-* **Redis** — caching & queues
-* **Elasticsearch** — full-text search & filtering
-* **Pusher** — real-time notifications & updates
-
----
-
-## 📦 Data Architecture
+## 📊 Data Architecture
 
 ### Relational Data (MySQL)
-
-* `users`
-* `companies`
-* `jobs`
-* `job_applications`
-* `job_categories`
-* `skills`
-* `saved_jobs`
+- `users` - User accounts and authentication
+- `companies` - Company profiles and information
+- `jobs` - Job listings and details
+- `job_applications` - Candidate applications
+- `job_categories` - Job categorization
+- `skills` - Skills management
+- `saved_jobs` - User saved/bookmarked jobs
 
 ### Event & Analytics Data (MongoDB)
-
-* `job_views`
-* `search_logs`
-* `user_activity`
-* `application_events`
+- `job_views` - Track job listing views
+- `search_logs` - User search behavior analytics
+- `user_activity` - Platform engagement tracking
+- `application_events` - Application lifecycle events
 
 ### Search Engine (Elasticsearch)
+- `jobs` index with full-text search
+- Autocomplete suggestions
+- Advanced filtering
+- Geo-based queries *(optional / planned)*
 
-* `jobs` index
-* Autocomplete suggestions
-* Advanced filtering
-* Geo-based queries *(optional / planned)*
+## 👥 User Stories
 
----
+### Guest User
+- As a user, I can search and filter jobs
+- View job details and company information
+
+### Candidate
+- As a candidate, I can apply to a job (only once)
+- I must be logged in to apply
+- Upload my resume (PDF format)
+- I can undo my application within 3 seconds
+- View my application history in dashboard
+- Receive email notification when employer views my application
+
+### Employer
+- As an employer, I can view applications for my jobs
+- Mark an application as viewed
+- Add and manage job listings
+- Add and manage company profile
+
+### Admin
+- As an admin, I can CRUD job categories
+- I can CRUD skills
 
 ## 🚀 Project Progress (Agile / Scrum)
 
 ### ✅ Sprint 1 — Authentication & Roles (Completed)
-
-* Role-based user system
-* Secure API guards
-* Role-aware frontend routing
-* Separate dashboards per role
-
----
+- Role-based user system
+- Secure API guards
+- Role-aware frontend routing
+- Separate dashboards per role
 
 ### ✅ Sprint 2 — Company & Profile Management (Completed)
+- Company CRUD operations
+- Employer ↔ Company relationship
+- Logo upload & storage
+- Employer dashboard
+- Public company profiles (slug-based)
+- Automatic slug regeneration
+- Logo preview & drag-and-drop upload
+- Responsive company cards
+- SEO-ready meta tags
 
-* Company CRUD operations
-* Employer ↔ Company relationship
-* Logo upload & storage
-* Employer dashboard
-* Public company profiles (slug-based)
-* Automatic slug regeneration
-* Logo preview & drag-and-drop upload
-* Responsive company cards
-* SEO-ready meta tags
+### ✅ Sprint 3 — Job Management (Completed)
+- Job CRUD operations
+- Draft & published job states
+- Job visibility rules
+- Application flow
+- Search & filtering integration
 
----
-
-### ✅ Sprint 3  — Job Management (Core Features)
-
-* Job CRUD
-* Draft & published jobs
-* Job visibility rules
-* Application flow
-* Search & filtering integration
-
----
+### ✅ Sprint 4 — Search & Filtering (Completed)
+- Elasticsearch integration
+- Full-text search capabilities
+- Filters: Location, Salary range, Job type, Skills
+- Sorting by date and relevance
+- Search bar with debounce
+- Filter sidebar
+- Autocomplete suggestions
 
 ## ⏭️ Next Milestone
 
-🔍 EPIC 4: Search & Filtering (🔥 big value)
-
-
-
-
-
-
-## 🧠 Architecture Highlights
-
-* Clean separation between **API** and **frontend**
-* Multi-database strategy for scalability
-* Event-driven design for real-time features
-* Built as a **production-grade portfolio project**
+### 📄 Sprint 5 — Applications & Resume Management (Upcoming)
+- Resume upload and parsing
+- Application tracking system
+- Email notification queue implementation
+- View tracking for employer applications
+- Enhanced candidate dashboard
+```

@@ -1,3 +1,4 @@
+//src/pages/Company/Companies.tsx
 import { useEffect } from "react";
 import API from "../../api";
 import { toast } from "react-toastify";

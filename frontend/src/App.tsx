@@ -15,6 +15,8 @@ import CandidateDashboard from "./pages/Dashboard/CandidateDashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import CompaniesList from "./pages/Company/CompaniesList";
 import CompanyPage from "./pages/Company/CompanyPage";
+import JobsList from "./pages/Jobs/JobsList";
+import JobPage from "./pages/Jobs/JobPage";
 
 const App = () => {
   const { theme, isAuth, role, startTokenRefreshLoop } = useStore();
@@ -58,18 +60,21 @@ const App = () => {
             )
           }
         />
-
         <Route
           path="/profile"
           element={isAuth ? <Profile /> : <Navigate to="/login" />}
         />
-
         {/* Catch-all route */}
         <Route path="*" element={<NotFound />} />
-
         {/*Public routes*/}
         <Route path="/companies" element={<CompaniesList />} />
         <Route path="/companies/:slug" element={<CompanyPage />} />
+        {/* Public Jobs */}
+        <Route path="/jobs" element={<JobsList />} />
+
+        {/* Job Details Page */}
+        <Route path="/jobs" element={<JobsList />} />
+        <Route path="/jobs/:slug" element={<JobPage />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>

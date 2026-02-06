@@ -64,5 +64,11 @@ public function companies()
     return $this->hasMany(Company::class);
 }
 
+public function applications()
+{
+    return $this->hasMany(Application::class);
+}
+
+
 
 }

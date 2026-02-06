@@ -19,6 +19,16 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+// Skip token refresh for auth and password reset endpoints
+const skipAuthEndpoints = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/skills",
+  "/categories",
+];
+
 // Request interceptor – attach token
 API.interceptors.request.use((config: AxiosRequestConfig) => {
   const token = localStorage.getItem("token");

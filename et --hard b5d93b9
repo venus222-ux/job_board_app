@@ -1,0 +1,13 @@
+[33m13283c6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{0}: rebase (abort): updating HEAD
+[33m13283c6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{1}: rebase (abort): updating HEAD
+[33m4dd8da1[m HEAD@{2}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33m8a0aa7f[m HEAD@{3}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33mcdbe557[m HEAD@{4}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33m43af29c[m HEAD@{5}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33m989d0ef[m HEAD@{6}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33m13283c6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{7}: commit (amend): EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33mb5d93b9[m HEAD@{8}: reset: moving to HEAD
+[33mb5d93b9[m HEAD@{9}: commit: EPIC 3: Job Management (Core). Goal:Goal: Job posting & listing. Backend: Job CRUD, Status (draft, published, closed),Categories & skills,Elasticsearch sync. FRONTEND:Job create/edit form, Job cards, Job details page
+[33m968f7a8[m HEAD@{10}: commit: change readme.txt
+[33m3bc1449[m HEAD@{11}: commit: Sprint 2 - Company & Profile Management (Completed):Company CRUD operations,Employer ↔ Company relationship,Logo upload & storage,Employer dashboard,Public company profiles (slug-based),Automatic slug regeneration,Logo preview & drag-and-drop upload,Responsive company cards,SEO-ready meta tags
+[33m6ec9026[m HEAD@{12}: commit (initial): SPRINT 1 DELIVERABLE (Portfolio Gold): Role-based users, Secure backend guards, Role-aware frontend, Separate dashboards

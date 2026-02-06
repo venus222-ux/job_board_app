@@ -7,5 +7,11 @@
     "dev:backend": "cd backend && php artisan serve",
     "dev:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "dependencies": {
+    "axios": "^1.13.5",
+    "chart.js": "^4.5.1",
+    "lucide-react": "^0.563.0",
+    "react-chartjs-2": "^5.3.1"
   }
 }

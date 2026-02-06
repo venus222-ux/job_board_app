@@ -5,12 +5,18 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 14px; /* Was probably 16px by default */
+  line-height: 1.4;
+  color: #1e293b;
 }
+
+.logo {
+  height: 4em; /* reduced from 6em */
+  padding: 1em; /* reduced from 1.5em */
+}
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }

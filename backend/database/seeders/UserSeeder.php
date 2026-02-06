@@ -3,41 +3,34 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('users')->truncate(); // safer than delete()
+        // Disable FK checks to allow truncating tables
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // Admin
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => 'password123',
-            'role' => 'admin',
-        ]);
+        // Truncate users table safely
+        DB::table('users')->truncate();
 
-        // Employer
-        User::create([
-            'name' => 'Employer User',
-            'email' => 'employer@example.com',
-            'password' => 'password123',
-            'role' => 'employer',
-        ]);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Candidate
-        User::create([
-            'name' => 'Candidate User',
-            'email' => 'candidate@example.com',
-            'password' => 'password123',
-            'role' => 'candidate',
-        ]);
+        // Create default users
+        $users = [
+            ['name' => 'Admin User', 'email' => 'admin@example.com', 'password' => Hash::make('password123'), 'role' => 'admin'],
+            ['name' => 'Employer User', 'email' => 'employer@example.com', 'password' => Hash::make('password123'), 'role' => 'employer'],
+            ['name' => 'Candidate User', 'email' => 'candidate@example.com', 'password' => Hash::make('password123'), 'role' => 'candidate'],
+        ];
 
-        // More random candidates
+        foreach ($users as $user) {
+            User::create($user);
+        }
+
+        // Create 7 random candidates
         User::factory(7)->create();
     }
 }

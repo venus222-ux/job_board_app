@@ -1,0 +1,35 @@
+/* JobsList.css */
+
+.jobs-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.job-grid-item {
+  width: 100%;
+  min-width: 0; /* Prevents overflow issues */
+}
+
+/* Make sure JobCard takes full width */
+.job-grid-item .job-card {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 992px) {
+  .jobs-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .jobs-grid-container {
+    grid-template-columns: 1fr;
+  }
+}
