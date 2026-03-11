@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { toast } from "react-toastify";
 import { useJob } from "../../hooks/useJob";
 import "./JobPage.css";
+import DOMPurify from "dompurify";
 
 const JobPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -157,10 +158,11 @@ const JobPage = () => {
                   <span className="section-icon">📝</span>
                   Job Description
                 </h2>
+                import DOMPurify from "dompurify";
                 <div
                   className="job-description"
                   dangerouslySetInnerHTML={{
-                    __html: job.description || "No description provided.",
+                    __html: DOMPurify.sanitize(job.description || ""),
                   }}
                 />
               </div>

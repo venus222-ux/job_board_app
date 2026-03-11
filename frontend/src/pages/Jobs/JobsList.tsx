@@ -1,5 +1,5 @@
 // frontend/src/pages/Jobs/JobList.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { VirtuosoGrid } from "react-virtuoso";
 
@@ -7,10 +7,11 @@ import { jobService } from "../../services/jobService";
 import JobCard from "../../components/Job/JobCard";
 import SearchBar from "../../components/Search/SearchBar";
 import FiltersSidebar from "../../components/Search/FiltersSidebar";
+import JobCardSkeleton from "./JobCardSkeleton";
 import { Job } from "../../types/job";
 import { useDebounce } from "../../hooks/useDebounce";
 
-import "./JobsList.css";
+import styles from "./JobsList.module.css"; // CSS Module
 
 const JobsList = () => {
   const [params, setParams] = useSearchParams();
@@ -18,7 +19,7 @@ const JobsList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [searchQuery, setSearchQuery] = useState(params.get("q") || "");
+  const [searchQuery, setSearchQuery] = useState(params.get("query") || "");
   const debouncedQuery = useDebounce(searchQuery, 400);
 
   const [filters, setFilters] = useState({
@@ -38,7 +39,7 @@ const JobsList = () => {
     setLoading(true);
     try {
       const res = await jobService.searchJobs({
-        q: debouncedQuery,
+        query: debouncedQuery || "*",
         location: filters.location,
         job_type: filters.job_type,
         experience_level: filters.experience_level,
@@ -47,9 +48,11 @@ const JobsList = () => {
         salary_max: filters.salary_max,
         sort: filters.sort,
         skills: filters.skills.filter(Boolean).join(","),
-        category: filters.category.filter(Boolean).join(","),
+        category: filters.category.join(","),
       });
-      setJobs(Array.isArray(res.data) ? res.data : []);
+
+      const jobsData = Array.isArray(res.data.data) ? res.data.data : [];
+      setJobs(jobsData);
     } catch (err) {
       console.error("Error fetching jobs:", err);
       setJobs([]);
@@ -58,10 +61,10 @@ const JobsList = () => {
     }
   };
 
-  // --- Update URL query params when filters/search change ---
+  // --- Sync filters & search to URL ---
   useEffect(() => {
     setParams({
-      q: searchQuery,
+      query: searchQuery,
       location: filters.location,
       job_type: filters.job_type,
       experience_level: filters.experience_level,
@@ -74,49 +77,77 @@ const JobsList = () => {
     });
   }, [searchQuery, filters, setParams]);
 
-  // --- Fetch jobs when filters/search debounce changes ---
+  // --- Fetch jobs on debounced search or filters ---
   useEffect(() => {
     fetchJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery, filters]);
 
+  // --- Memoize skeletons ---
+  const renderSkeletons = useMemo(() => {
+    return Array.from({ length: 6 }).map((_, i) => (
+      <div key={i} className={styles.gridItem}>
+        <JobCardSkeleton />
+      </div>
+    ));
+  }, []);
+
+  // --- Memoize Virtuoso item content to prevent re-renders ---
+  const itemContent = useMemo(
+    () => (index: number) => {
+      const job = jobs[index];
+      return (
+        <div className={styles.gridItem}>
+          <JobCard job={job} showStatus={false} />
+        </div>
+      );
+    },
+    [jobs],
+  );
+
   return (
-    <div className="container-fluid p-4 mt-4">
-      <div className="mb-4">
+    <div className={styles.container}>
+      <div className={styles.searchWrapper}>
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
 
-      <div className="row">
-        <div className="col-md-3">
+      <div className={styles.mainLayout}>
+        <aside className={styles.sidebar}>
           <FiltersSidebar filters={filters} setFilters={setFilters} />
-        </div>
+        </aside>
 
-        <div className="col-md-9">
-          <h2 className="mb-4">💼 Job Listings</h2>
+        <main className={styles.content}>
+          <h2 className={styles.title}>💼 Job Listings</h2>
 
-          {loading && <p>Loading jobs...</p>}
-          {!loading && jobs.length === 0 && <p>No jobs found.</p>}
-
-          <div className="row">
+          {loading ? (
+            <div className={styles.gridContainer}>{renderSkeletons}</div>
+          ) : jobs.length === 0 ? (
+            <div className={styles.emptyState}>
+              <img
+                src="/illustrations/empty-jobs.svg"
+                alt="No jobs found"
+                className={styles.emptyImage}
+              />
+              <p>No jobs match your criteria. Try adjusting your filters.</p>
+            </div>
+          ) : (
             <div style={{ height: "75vh", width: "100%" }}>
               <VirtuosoGrid
                 totalCount={jobs.length}
                 useWindowScroll
-                itemContent={(index) => (
-                  <JobCard job={jobs[index]} showStatus={false} />
-                )}
-                listClassName="jobs-grid-container"
+                itemContent={itemContent}
+                listClassName={styles.gridContainer}
                 components={{
                   Item: ({ children, ...props }) => (
-                    <div {...props} className="job-grid-item">
+                    <div {...props} className={styles.gridItem}>
                       {children}
                     </div>
                   ),
                 }}
               />
             </div>
-          </div>
-        </div>
+          )}
+        </main>
       </div>
     </div>
   );

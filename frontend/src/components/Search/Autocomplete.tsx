@@ -18,11 +18,11 @@ export default function Autocomplete({
       return;
     }
 
-    API.get("/search/jobs", {
-      params: { q: debounced },
-    }).then((res) => {
-      setItems(res.data.map((j: any) => j.title).slice(0, 5));
-    });
+    API.get("/search/jobs/autocomplete", { params: { query: debounced } }).then(
+      (res) => {
+        setItems(res.data); // now res.data is an array of strings
+      },
+    );
   }, [debounced]);
 
   if (!items.length) return null;

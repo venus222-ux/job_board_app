@@ -117,7 +117,9 @@ export default function Navbar() {
             {/* User Menu */}
             {isAuth ? (
               <div className="user-menu">
-                <button className="user-button">
+                <div className="user-button">
+                  {" "}
+                  {/* changed to div */}
                   <div className="user-avatar">
                     <span>JD</span>
                     <div className="avatar-glow"></div>
@@ -130,12 +132,15 @@ export default function Navbar() {
                         <span className="dropdown-email">john@example.com</span>
                       </div>
                     </div>
+
                     <div className="dropdown-divider"></div>
+
                     <Link to="/profile" className="dropdown-item">
                       <span>👤</span> Profile
                     </Link>
 
                     <div className="dropdown-divider"></div>
+
                     <button
                       className="dropdown-item logout"
                       onClick={handleLogout}
@@ -143,7 +148,7 @@ export default function Navbar() {
                       <span>🚪</span> Sign Out
                     </button>
                   </div>
-                </button>
+                </div>
               </div>
             ) : (
               <div className="auth-buttons">

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { jobService } from "../services/jobService";
 import { toast } from "react-toastify";
+import { Job } from "../types/job";
 
 export const useJob = (slug?: string) => {
-  const [job, setJob] = useState<any>(null);
+  const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [resume, setResume] = useState<File | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -29,11 +30,24 @@ export const useJob = (slug?: string) => {
   useEffect(() => {
     if (!job) return;
 
-    jobService.getMyApplications().then((res) => {
-      const ids = res.data.map((a: any) => a.job.id);
-      if (ids.includes(job.id)) setApplied(true);
-    });
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    jobService
+      .getMyApplications()
+      .then((res) => {
+        const ids = res.data.map((a: any) => a.job.id);
+        if (ids.includes(job.id)) setApplied(true);
+      })
+      .catch(() => {});
   }, [job]);
+
+  //clear the interval when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   const startApply = () => {
     if (!resume) return toast.error("Upload resume");

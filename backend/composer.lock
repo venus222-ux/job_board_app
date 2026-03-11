@@ -4,8 +4,219 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d1ea67d51989cc6589a6be157526fff",
+    "content-hash": "509e81aa3127e24ef23a47391ec32330",
     "packages": [
+        {
+            "name": "babenkoivan/elastic-adapter",
+            "version": "v4.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/babenkoivan/elastic-adapter.git",
+                "reference": "8663de00ca00d4403ce61728fd86f3a77965b0c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/babenkoivan/elastic-adapter/zipball/8663de00ca00d4403ce61728fd86f3a77965b0c2",
+                "reference": "8663de00ca00d4403ce61728fd86f3a77965b0c2",
+                "shasum": ""
+            },
+            "require": {
+                "babenkoivan/elastic-client": "^3.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "dg/bypass-finals": "^1.7",
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "orchestra/testbench": "^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Elastic\\Adapter\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Babenko",
+                    "email": "babenko.i.a@gmail.com"
+                }
+            ],
+            "description": "Adapter for official PHP Elasticsearch client",
+            "keywords": [
+                "adapter",
+                "client",
+                "elastic",
+                "elasticsearch",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/babenkoivan/elastic-adapter/issues",
+                "source": "https://github.com/babenkoivan/elastic-adapter/tree/v4.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/ivanbabenko",
+                    "type": "ko-fi"
+                },
+                {
+                    "url": "https://paypal.me/babenkoi",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2025-04-07T07:00:35+00:00"
+        },
+        {
+            "name": "babenkoivan/elastic-client",
+            "version": "v3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/babenkoivan/elastic-client.git",
+                "reference": "65f4a4c9dc3b5f6ba4e68e59ad26a68393aae995"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/babenkoivan/elastic-client/zipball/65f4a4c9dc3b5f6ba4e68e59ad26a68393aae995",
+                "reference": "65f4a4c9dc3b5f6ba4e68e59ad26a68393aae995",
+                "shasum": ""
+            },
+            "require": {
+                "elasticsearch/elasticsearch": "^8.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "orchestra/testbench": "^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Elastic\\Client\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Elastic\\Client\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Babenko",
+                    "email": "babenko.i.a@gmail.com"
+                }
+            ],
+            "description": "The official PHP Elasticsearch client integrated with Laravel",
+            "keywords": [
+                "client",
+                "elastic",
+                "elasticsearch",
+                "laravel",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/babenkoivan/elastic-client/issues",
+                "source": "https://github.com/babenkoivan/elastic-client/tree/v3.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/ivanbabenko",
+                    "type": "ko-fi"
+                },
+                {
+                    "url": "https://paypal.me/babenkoi",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2024-06-18T06:53:01+00:00"
+        },
+        {
+            "name": "babenkoivan/elastic-scout-driver",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/babenkoivan/elastic-scout-driver.git",
+                "reference": "f3791521fb3216850335f491a1461a16738125cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/babenkoivan/elastic-scout-driver/zipball/f3791521fb3216850335f491a1461a16738125cd",
+                "reference": "f3791521fb3216850335f491a1461a16738125cd",
+                "shasum": ""
+            },
+            "require": {
+                "babenkoivan/elastic-adapter": "^4.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "babenkoivan/elastic-migrations": "^4.0",
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "laravel/legacy-factories": "^1.3",
+                "laravel/scout": "^10.0",
+                "orchestra/testbench": "^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Elastic\\ScoutDriver\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Elastic\\ScoutDriver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Babenko",
+                    "email": "babenko.i.a@gmail.com"
+                }
+            ],
+            "description": "Elasticsearch driver for Laravel Scout",
+            "keywords": [
+                "driver",
+                "elastic",
+                "elasticsearch",
+                "laravel",
+                "php",
+                "scout"
+            ],
+            "support": {
+                "issues": "https://github.com/babenkoivan/elastic-scout-driver/issues",
+                "source": "https://github.com/babenkoivan/elastic-scout-driver/tree/v4.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/ivanbabenko",
+                    "type": "ko-fi"
+                },
+                {
+                    "url": "https://paypal.me/babenkoi",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2024-06-18T07:06:48+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.14.5",
@@ -1390,85 +1601,6 @@
             "time": "2026-01-28T03:40:49+00:00"
         },
         {
-            "name": "laravel/horizon",
-            "version": "v5.44.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/horizon.git",
-                "reference": "00c21e4e768112cce3f4fe576d75956dfc423de2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/00c21e4e768112cce3f4fe576d75956dfc423de2",
-                "reference": "00c21e4e768112cce3f4fe576d75956dfc423de2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-pcntl": "*",
-                "ext-posix": "*",
-                "illuminate/contracts": "^9.21|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/queue": "^9.21|^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^9.21|^10.0|^11.0|^12.0|^13.0",
-                "nesbot/carbon": "^2.17|^3.0",
-                "php": "^8.0",
-                "ramsey/uuid": "^4.0",
-                "symfony/console": "^6.0|^7.0|^8.0",
-                "symfony/error-handler": "^6.0|^7.0|^8.0",
-                "symfony/polyfill-php83": "^1.28",
-                "symfony/process": "^6.0|^7.0|^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^7.55|^8.36|^9.15|^10.8|^11.0",
-                "phpstan/phpstan": "^1.10|^2.0",
-                "predis/predis": "^1.1|^2.0|^3.0"
-            },
-            "suggest": {
-                "ext-redis": "Required to use the Redis PHP driver.",
-                "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0|^3.0)."
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Horizon": "Laravel\\Horizon\\Horizon"
-                    },
-                    "providers": [
-                        "Laravel\\Horizon\\HorizonServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-master": "6.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Horizon\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Dashboard and code-driven configuration for Laravel queues.",
-            "keywords": [
-                "laravel",
-                "queue"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.44.0"
-            },
-            "time": "2026-02-10T18:18:08+00:00"
-        },
-        {
             "name": "laravel/prompts",
             "version": "v0.3.11",
             "source": {
@@ -1589,6 +1721,86 @@
                 "source": "https://github.com/laravel/sanctum"
             },
             "time": "2026-01-22T22:27:01+00:00"
+        },
+        {
+            "name": "laravel/scout",
+            "version": "v10.24.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/scout.git",
+                "reference": "f9864d9a727a0c0d6b95e08ed92df8c301ae6d2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/scout/zipball/f9864d9a727a0c0d6b95e08ed92df8c301ae6d2c",
+                "reference": "f9864d9a727a0c0d6b95e08ed92df8c301ae6d2c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/bus": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/database": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/http": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/pagination": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/queue": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.0",
+                "symfony/console": "^6.0|^7.0|^8.0"
+            },
+            "conflict": {
+                "algolia/algoliasearch-client-php": "<3.2.0|>=5.0.0"
+            },
+            "require-dev": {
+                "algolia/algoliasearch-client-php": "^3.2|^4.0",
+                "meilisearch/meilisearch-php": "^1.0",
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^7.31|^8.36|^9.15|^10.8|^11.0",
+                "php-http/guzzle7-adapter": "^1.0",
+                "phpstan/phpstan": "^1.10",
+                "typesense/typesense-php": "^4.9.3"
+            },
+            "suggest": {
+                "algolia/algoliasearch-client-php": "Required to use the Algolia engine (^3.2).",
+                "meilisearch/meilisearch-php": "Required to use the Meilisearch engine (^1.0).",
+                "typesense/typesense-php": "Required to use the Typesense engine (^4.9)."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Scout\\ScoutServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "10.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Scout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel Scout provides a driver based solution to searching your Eloquent models.",
+            "keywords": [
+                "algolia",
+                "laravel",
+                "search"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/scout/issues",
+                "source": "https://github.com/laravel/scout"
+            },
+            "time": "2026-02-10T18:44:39+00:00"
         },
         {
             "name": "laravel/serializable-closure",

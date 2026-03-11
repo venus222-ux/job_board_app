@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Job extends Model
 {
-    use SoftDeletes;
+    use Searchable, SoftDeletes;
 
     protected $fillable = [
         'company_id',
@@ -25,7 +26,7 @@ class Job extends Model
         'salary_currency',
         'salary_type',
         'is_remote',
-        'experience_level', // NEW
+        'experience_level',
     ];
 
     protected $casts = [
@@ -34,45 +35,62 @@ class Job extends Model
         'is_remote' => 'boolean',
     ];
 
-// app/Models/Job.php
+    /*
+    |--------------------------------------------------------------------------
+    | Boot Model
+    |--------------------------------------------------------------------------
+    */
 
-protected static function booted()
-{
-    static::creating(function ($job) {
-        $job->slug = $job->generateUniqueSlug($job->title ?: 'untitled-job');
-    });
+    protected static function booted()
+    {
+        static::creating(function ($job) {
+            $job->slug = $job->generateSlug($job->title);
+        });
 
-    static::updating(function ($job) {
-        // Always ensure slug exists, even if title didn't change
-        if ($job->isDirty('title') || !$job->slug) {
-            $job->slug = $job->generateUniqueSlug($job->title ?: 'untitled-job');
-        }
-    });
+        static::updating(function ($job) {
 
-    static::saving(function ($job) {
-        // Last resort - ensure slug exists before saving
-        if (empty($job->slug)) {
-            $job->slug = $job->generateUniqueSlug($job->title ?: 'untitled-job-' . ($job->id ?: rand()));
-        }
-    });
-}
+            // only regenerate slug if title changes
+            if ($job->isDirty('title')) {
+                $job->slug = $job->generateSlug($job->title);
+            }
 
-protected function generateUniqueSlug($title)
-{
-    $baseSlug = Str::slug($title);
-    if (empty($baseSlug)) {
-        $baseSlug = 'job-' . ($this->id ?: rand(1000, 9999));
+        });
     }
 
-    $slug = $baseSlug;
-    $counter = 1;
+    /*
+    |--------------------------------------------------------------------------
+    | Generate Unique SEO Slug
+    |--------------------------------------------------------------------------
+    */
 
-    while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
-        $slug = $baseSlug . '-' . $counter++;
+
+    public function generateSlug(string $title): string
+    {
+        $base = Str::slug($title);
+
+        if (!$base) {
+            $base = 'job';
+        }
+
+        $slug = $base;
+        $counter = 1;
+
+        while (
+            static::where('slug', $slug)
+                ->where('id', '!=', $this->id ?? 0)
+                ->exists()
+        ) {
+            $slug = $base . '-' . $counter++;
+        }
+
+        return $slug;
     }
 
-    return $slug;
-}
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
     public function company()
     {
@@ -86,15 +104,59 @@ protected function generateUniqueSlug($title)
 
     public function applications()
     {
-       return $this->hasMany(Application::class);
+        return $this->hasMany(Application::class);
     }
 
-    // Use slug for route model binding
+    /*
+    |--------------------------------------------------------------------------
+    | Route Binding
+    |--------------------------------------------------------------------------
+    */
+
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Elasticsearch Scout
+    |--------------------------------------------------------------------------
+    */
+    public function searchableAs()
+{
+    return 'jobs';
+}
 
+
+
+    public function toSearchableArray()
+{
+    $this->loadMissing(['company','skills']);
+
+    return [
+        'id' => $this->id,
+        'title' => $this->title,
+        'slug' => $this->slug,
+        'description' => $this->description,
+        'location' => $this->location,
+        'status' => $this->status,
+        'categories' => $this->categories,
+        'job_type' => $this->job_type,
+        'experience_level' => $this->experience_level,
+        'salary_min' => $this->salary_min,
+        'salary_max' => $this->salary_max,
+        'is_remote' => $this->is_remote,
+        'published_at' => $this->published_at,
+
+        'skills' => $this->skills->pluck('name')->toArray(),
+
+        'company' => [
+            'name' => $this->company->name,
+            'slug' => $this->company->slug,
+            'logo' => $this->company->logo,
+        ]
+    ];
+}
 }

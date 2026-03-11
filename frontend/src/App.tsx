@@ -66,13 +66,12 @@ const App = () => {
         />
         {/* Catch-all route */}
         <Route path="*" element={<NotFound />} />
+
         {/*Public routes*/}
         <Route path="/companies" element={<CompaniesList />} />
         <Route path="/companies/:slug" element={<CompanyPage />} />
-        {/* Public Jobs */}
-        <Route path="/jobs" element={<JobsList />} />
 
-        {/* Job Details Page */}
+        {/* Public Jobs */}
         <Route path="/jobs" element={<JobsList />} />
         <Route path="/jobs/:slug" element={<JobPage />} />
       </Routes>

@@ -1,21 +1,39 @@
 import { Link } from "react-router-dom";
 import { Job } from "../../types/job";
-// import "./JobCard.css";
+import React, { memo, useMemo } from "react";
 
 interface Props {
   job: Job;
-  showStatus?: boolean; // Add optional prop
+  showStatus?: boolean; // optional
 }
 
 const JobCard = ({ job, showStatus = false }: Props) => {
-  // Use slug if available, otherwise fallback to ID
-  const jobSlug = job.slug || job.id;
+  const jobSlug = job.slug;
+
+  // Memoize formatted salary string
+  const salaryText = useMemo(() => {
+    if (!job.salary_min) return null;
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: job.salary_currency || "USD",
+      maximumFractionDigits: 0,
+    });
+
+    const min = formatter.format(job.salary_min);
+    const max =
+      job.salary_max && job.salary_max !== job.salary_min
+        ? ` - ${formatter.format(job.salary_max)}`
+        : "";
+
+    const period = job.salary_type === "hourly" ? "hr" : "mo";
+    return `${min}${max} / ${period}`;
+  }, [job.salary_min, job.salary_max, job.salary_currency, job.salary_type]);
 
   return (
     <div className="job-card">
       <div className="job-header">
         <h5 className="job-title">{job.title}</h5>
-        {/* Only show status if showStatus is true */}
         {showStatus && job.status && (
           <span className={`job-status ${job.status}`}>
             {job.status === "published" && "✅ "}
@@ -57,41 +75,16 @@ const JobCard = ({ job, showStatus = false }: Props) => {
             <span role="img" aria-label="job type">
               ⏰
             </span>{" "}
-            {job.job_type === "full-time" && "Full Time"}
-            {job.job_type === "part-time" && "Part Time"}
-            {job.job_type === "contract" && "Contract"}
-            {job.job_type === "freelance" && "Freelance"}
-            {job.job_type === "internship" && "Internship"}
-            {![
-              "full-time",
-              "part-time",
-              "contract",
-              "freelance",
-              "internship",
-            ].includes(job.job_type) && job.job_type}
+            {job.job_type.replace("-", " ")}
           </span>
         )}
 
-        {job.salary_min && (
+        {salaryText && (
           <span className="job-detail salary">
             <span role="img" aria-label="salary">
               💰
             </span>{" "}
-            <span className="job-salary">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: job.salary_currency || "USD",
-                maximumFractionDigits: 0,
-              }).format(job.salary_min)}
-              {job.salary_max &&
-                job.salary_max !== job.salary_min &&
-                ` - ${new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: job.salary_currency || "USD",
-                  maximumFractionDigits: 0,
-                }).format(job.salary_max)}`}{" "}
-              / {job.salary_type === "hourly" ? "hr" : "mo"}
-            </span>
+            <span className="job-salary">{salaryText}</span>
           </span>
         )}
 
@@ -105,7 +98,6 @@ const JobCard = ({ job, showStatus = false }: Props) => {
         )}
       </div>
 
-      {/* Skills and Categories */}
       {job.skills && job.skills.length > 0 && (
         <div className="job-footer">
           <div className="job-meta">
@@ -138,7 +130,7 @@ const JobCard = ({ job, showStatus = false }: Props) => {
       )}
 
       <Link
-        to={jobSlug ? `/jobs/${jobSlug}` : "#"}
+        to={`/jobs/${jobSlug}`}
         className={`job-action-btn view ${!jobSlug ? "disabled" : ""}`}
         onClick={(e) => !jobSlug && e.preventDefault()}
         style={{
@@ -151,7 +143,7 @@ const JobCard = ({ job, showStatus = false }: Props) => {
           textDecoration: "none",
           padding: "0.75rem 1.5rem",
           borderRadius: "8px",
-          fontWeight: "600",
+          fontWeight: 600,
           marginTop: "1rem",
           width: "100%",
           border: "none",
@@ -168,4 +160,5 @@ const JobCard = ({ job, showStatus = false }: Props) => {
   );
 };
 
-export default JobCard;
+// Memoized to avoid unnecessary re-renders
+export default memo(JobCard);

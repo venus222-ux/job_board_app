@@ -10,6 +10,7 @@ use App\Http\Controllers\EmployerApplicationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobViewController;
 use App\Http\Controllers\SearchController;
+
 use Illuminate\Support\Facades\Route;
 
 // -----------------------------
@@ -26,7 +27,8 @@ Route::get('/companies/{slug}', [CompanyController::class, 'show']);
 
 // Public Jobs
 Route::get('/jobs', [JobController::class, 'index']);
-Route::get('/search/jobs', [SearchController::class, 'jobs']);
+Route::get('/search/jobs', [SearchController::class, 'jobs']); // full listing
+Route::get('/search/jobs/autocomplete', [SearchController::class, 'autocomplete']); // autocomplete
 Route::post('/jobs/{job}/view', [JobViewController::class, 'increment']);
 
 
@@ -34,7 +36,6 @@ Route::post('/jobs/{job}/view', [JobViewController::class, 'increment']);
 // Public jobs – by slug or ID
 Route::get('/jobs/id/{id}', [JobController::class, 'showById']);
 Route::get('/jobs/{job:slug}', [JobController::class, 'show']); // candidate-friendly
-Route::get('/jobs/{identifier}', [JobController::class, 'show'])->where('identifier', '.*');
 
 // Admin dashboard
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])

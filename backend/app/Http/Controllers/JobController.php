@@ -75,8 +75,6 @@ class JobController extends Controller
             $job->skills()->sync($data['skills']);
         }
 
-        $this->indexJobES($job);
-
         return response()->json($job->fresh());
     }
 
@@ -186,17 +184,12 @@ class JobController extends Controller
     // -----------------------------
     // Public: show a job by ID or slug
     // -----------------------------
-    public function show($identifier)
+    // Public: show job by slug
+    public function show(Job $job)
     {
-        if (is_numeric($identifier)) {
-            $job = Job::with('company')->where('id', $identifier)->firstOrFail();
-        } else {
-            $job = Job::with('company')->where('slug', $identifier)->firstOrFail();
-        }
+       $job->load(['company', 'skills']);
 
-        $job->categories = is_array($job->categories) ? $job->categories : json_decode($job->categories, true) ?? [];
-
-        return response()->json($job);
+       return response()->json($job);
     }
 
     // -----------------------------
@@ -236,42 +229,19 @@ class JobController extends Controller
     // -----------------------------
     // Helper: Index job in Elasticsearch
     // -----------------------------
-    private function indexJobES(Job $job): void
-    {
+protected function indexJobES($job)
+{
+    try {
         $es = app(ElasticsearchService::class)->client();
-
-        try {
-            $es->index([
-                'index' => 'jobs',
-                'id' => $job->id,
-                'body' => [
-                    'title' => $job->title,
-                    'slug' => $job->slug,
-                    'description' => $job->description,
-                    'location' => $job->location,
-                    'status' => $job->status,
-                    'salary_min' => $job->salary_min,
-                    'salary_max' => $job->salary_max,
-                    'salary_currency' => $job->salary_currency,
-                    'salary_type' => $job->salary_type,
-                    'is_remote' => $job->is_remote,
-                    'experience_level' => $job->experience_level,
-                    'job_type' => $job->job_type,
-                    'categories' => $job->categories,
-                    'skills' => $job->skills->pluck('name')->toArray(),
-                    'company' => [
-                        'name' => $job->company->name,
-                        'slug' => $job->company->slug,
-                        'logo' => $job->company->logo,
-                    ],
-                    'published_at' => $job->published_at,
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Failed to index job in Elasticsearch', ['job_id' => $job->id, 'error' => $e->getMessage()]);
-        }
+        $es->index([
+            'index' => 'jobs',
+            'id' => $job->id,
+            'body' => $job->toSearchableArray(),
+        ]);
+    } catch (\Exception $e) {
+        Log::warning("Elasticsearch index failed for job {$job->id}: {$e->getMessage()}");
     }
-
+}
     // -----------------------------
     // Candidate: show job + track views
     // -----------------------------
