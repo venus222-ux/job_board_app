@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ✅ 1. Set Up Laravel Backend
 cd backend
 cp .env.example .env
@@ -35,116 +36,169 @@ MySQL
 MongoDB
 
 ```markdown
+=======
+>>>>>>> f043ee8 (Add Helpfile)
 # JobBoard Platform 🚀
 
-A modern, full-stack job board application built with React and Laravel, 
-featuring real-time updates, advanced search capabilities, and role-based access control.
+A modern, full-stack job board application inspired by LinkedIn Jobs and Indeed, built with React and Laravel. The platform supports real-time updates, advanced search, and role-based access control, optimized for performance and scalability.
 
-## 🏗️ High-Level Architecture
+---
 
-### Frontend Stack
-```
-React 18 (Vite + TypeScript)
-├── Zustand (State Management)
-├── Axios (HTTP Client)
-└── Laravel Echo (Real-time Updates)
-```
+## 1. Product Vision
 
-### Backend Stack
-```
-Laravel 12 API
-├── MySQL (Users, Jobs, Applications)
-├── MongoDB (Logs, Views, Activity)
-├── Redis (Cache & Queues - Email notifications)
-├── Elasticsearch (Search Engine)
-├── Pusher (Real-time Events)
-└── JWT Authentication
-```
+The goal of this project is to build a professional job board platform that supports:
 
-## 📊 Data Architecture
+* Job listings and company profiles
+* Candidate applications and resume management
+* Role-based dashboards for candidates, employers, and admins
+* Real-time notifications and activity tracking
+* Advanced search and filtering with Elasticsearch
+* Scalable logging and analytics using MongoDB
+
+This design separates structured relational data from flexible event and analytics data to optimize both performance and scalability.
+
+---
+
+## 2. Tech Architecture
+
+### Backend (Laravel 12)
+
+* API Layer: REST and GraphQL APIs
+* Authentication: JWT (JSON Web Tokens)
+* MySQL: Relational data (users, jobs, applications, companies, categories)
+* MongoDB: Event, logging, and analytics data
+* Redis: Cache and queue management
+* Pusher: Real-time notifications
+* Elasticsearch: Full-text job search
+
+### Frontend (React + Vite + TypeScript)
+
+* React 18 with Vite and TypeScript
+* Zustand for global state management
+* Axios for API communication
+* TanStack Query for data fetching and caching
+* Laravel Echo for real-time updates
+* Bootstrap for responsive UI
+
+---
+
+## 3. Core Features (Product Backlog)
+
+### Authentication & Roles
+
+* User registration and login using JWT
+* Role-based access: candidate, employer, admin
+* Separate dashboards and permissions per role
+
+### Companies
+
+* CRUD operations for company profiles
+* Logo upload and storage
+* Public company pages with SEO-ready slugs
+
+### Jobs
+
+* CRUD operations for job listings
+* Draft and published states
+* Job visibility and permissions
+* Pagination and filtering
+
+### Applications
+
+* Candidate can apply to jobs (once per job)
+* Resume upload (PDF)
+* Undo application within 3 seconds
+* View application history
+
+### Search & Filtering
+
+* Full-text search with Elasticsearch
+* Filters: location, salary, job type, skills
+* Sorting by date or relevance
+* Autocomplete suggestions
+
+### Notifications
+
+* Email notifications for application status and views
+* Real-time updates via Pusher
+* Activity tracking for candidates and employers
+
+### Admin Features
+
+* CRUD job categories
+* CRUD skills
+* Manage users and moderation tools
+
+---
+
+## 4. Suggested Data Design
 
 ### Relational Data (MySQL)
-- `users` - User accounts and authentication
-- `companies` - Company profiles and information
-- `jobs` - Job listings and details
-- `job_applications` - Candidate applications
-- `job_categories` - Job categorization
-- `skills` - Skills management
-- `saved_jobs` - User saved/bookmarked jobs
+
+* `users` – accounts and authentication
+* `companies` – company profiles
+* `jobs` – job listings
+* `job_applications` – candidate applications
+* `job_categories` – categories of jobs
+* `skills` – skill management
+* `saved_jobs` – candidate bookmarked jobs
 
 ### Event & Analytics Data (MongoDB)
-- `job_views` - Track job listing views
-- `search_logs` - User search behavior analytics
-- `user_activity` - Platform engagement tracking
-- `application_events` - Application lifecycle events
+
+* `job_views` – track job listing views
+* `search_logs` – record user search behavior
+* `user_activity` – platform engagement
+* `application_events` – job application lifecycle
 
 ### Search Engine (Elasticsearch)
-- `jobs` index with full-text search
-- Autocomplete suggestions
-- Advanced filtering
-- Geo-based queries *(optional / planned)*
 
-## 👥 User Stories
+* Jobs index with full-text search
+* Filtering by category, skills, and location
+* Autocomplete and suggestions
+* Optional geo-based search
 
-### Guest User
-- As a user, I can search and filter jobs
-- View job details and company information
+---
 
-### Candidate
-- As a candidate, I can apply to a job (only once)
-- I must be logged in to apply
-- Upload my resume (PDF format)
-- I can undo my application within 3 seconds
-- View my application history in dashboard
-- Receive email notification when employer views my application
+## 5. Architecture Philosophy
 
-### Employer
-- As an employer, I can view applications for my jobs
-- Mark an application as viewed
-- Add and manage job listings
-- Add and manage company profile
+* Separation of concerns: relational vs document data
+* API-first backend design
+* Real-time notifications and updates
+* Scalable infrastructure ready for high traffic
 
-### Admin
-- As an admin, I can CRUD job categories
-- I can CRUD skills
+---
 
-## 🚀 Project Progress (Agile / Scrum)
+## 6. Agile Progress (Scrum)
 
 ### ✅ Sprint 1 — Authentication & Roles (Completed)
-- Role-based user system
-- Secure API guards
-- Role-aware frontend routing
-- Separate dashboards per role
 
-### ✅ Sprint 2 — Company & Profile Management (Completed)
-- Company CRUD operations
-- Employer ↔ Company relationship
-- Logo upload & storage
-- Employer dashboard
-- Public company profiles (slug-based)
-- Automatic slug regeneration
-- Logo preview & drag-and-drop upload
-- Responsive company cards
-- SEO-ready meta tags
+* Role-based user system
+* Secure API guards
+* Role-aware frontend routing
+* Separate dashboards per role
+
+### ✅ Sprint 2 — Company Management (Completed)
+
+* CRUD for companies
+* Employer ↔ Company relationship
+* Logo upload & preview
+* SEO-ready company pages
 
 ### ✅ Sprint 3 — Job Management (Completed)
-- Job CRUD operations
-- Draft & published job states
-- Job visibility rules
-- Application flow
-- Search & filtering integration
+
+* CRUD for job listings
+* Draft & published states
+* Application flow
+* Search & filtering integration
 
 ### ✅ Sprint 4 — Search & Filtering (Completed)
-- Elasticsearch integration
-- Full-text search capabilities
-- Filters: Location, Salary range, Job type, Skills
-- Sorting by date and relevance
-- Search bar with debounce
-- Filter sidebar
-- Autocomplete suggestions
 
-## ⏭️ Next Milestone
+* Elasticsearch integration
+* Full-text search
+* Filters: location, salary, type, skills
+* Sorting and autocomplete
 
+<<<<<<< HEAD
 ### 📄 Sprint 5 — Applications & Resume Management (Upcoming)
 - Resume upload and parsing
 - Application tracking system
@@ -152,3 +206,17 @@ Laravel 12 API
 - View tracking for employer applications
 - Enhanced candidate dashboard
 ```
+=======
+### ⏭️ Sprint 5 — Applications & Resume Management (Upcoming)
+
+* Resume upload and parsing
+* Application tracking
+* Email notifications queue
+* Enhanced dashboards for candidates and employers
+
+---
+
+## 7. License
+
+This project is intended for educational and portfolio purposes. License terms can be updated according to project requirements.
+>>>>>>> f043ee8 (Add Helpfile)
