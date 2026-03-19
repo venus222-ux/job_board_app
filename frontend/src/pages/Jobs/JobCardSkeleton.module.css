@@ -1,0 +1,68 @@
+/* frontend/src/components/Job/JobCardSkeleton.module.css */
+.skeletonCard {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  animation: pulse 1.5s infinite;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.skeletonAvatar {
+  width: 48px;
+  height: 48px;
+  background: #e2e8f0;
+  border-radius: 8px;
+}
+
+.skeletonTitle {
+  flex: 1;
+  height: 24px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeletonLine {
+  height: 16px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.skeletonLineShort {
+  width: 60%;
+  height: 16px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.skeletonFooter {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.skeletonBadge {
+  width: 80px;
+  height: 28px;
+  background: #e2e8f0;
+  border-radius: 20px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

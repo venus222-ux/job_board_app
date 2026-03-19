@@ -1,0 +1,90 @@
+# .gitignore
+
+# =============================================
+# Custom / Test Files (you added this)
+# =============================================
+zzzzz.txt
+ES.txt
+
+# =============================================
+# Dependencies & Build Artifacts
+# =============================================
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+dist/
+build/
+*.tsbuildinfo
+
+# =============================================
+# Environment Variables & Secrets
+# =============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
+# =============================================
+# Logs & Debugging
+# =============================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =============================================
+# Runtime & Cache
+# =============================================
+.eslintcache
+.stylelintcache
+.cache/
+.turbo/
+.next/
+.nuxt/
+
+# =============================================
+# OS & Editor Files
+# =============================================
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# JetBrains / IntelliJ
+.idea/
+*.iml
+*.ipr
+
+# =============================================
+# Testing & Coverage
+# =============================================
+coverage/
+*.lcov
+.nyc_output/
+
+# =============================================
+# Optional: Package Manager Specific
+# =============================================
+# If you're using Yarn PnP
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# If you're using pnpm
+.pnpm-store/
