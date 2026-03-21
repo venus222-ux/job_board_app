@@ -8,6 +8,11 @@ export interface Category {
   name: string;
 }
 
+interface Candidate {
+  id: number;
+  name: string;
+  email: string;
+}
 export interface Company {
   id: number;
   name: string;
@@ -21,6 +26,7 @@ export interface Application {
   created_at: string;
   viewed_at?: string | null;
   cv_url?: string;
+  candidate?: Candidate;
 
   job: {
     id: number;

@@ -9,16 +9,25 @@ import DOMPurify from "dompurify";
 
 const JobPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { job, loading, resume, setResume, startApply, countdown, applied } =
-    useJob(slug);
+  const {
+    job,
+    loading,
+    resume,
+    setResume,
+    startApply,
+    countdown,
+    applied,
+    setApplied,
+  } = useJob(slug);
 
   const [dragover, setDragover] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Drag & Drop Resume
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragover(false);
-
     const file = e.dataTransfer.files[0];
     if (file?.type === "application/pdf") {
       setResume(file);
@@ -38,6 +47,26 @@ const JobPage = () => {
 
   const cancelApply = () => {
     toast.info("Application canceled");
+  };
+
+  // Submit application with error handling
+  const handleApply = async () => {
+    if (!resume) return;
+    setIsSubmitting(true);
+    try {
+      await startApply(); // API call inside useJob hook
+      toast.success("Application submitted!");
+      setApplied(true); // immediately update UI
+    } catch (err: any) {
+      if (err.response?.status === 409) {
+        toast.info("You have already applied for this job.");
+        setApplied(true); // mark as applied to update UI
+      } else {
+        toast.error("Failed to submit application. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatSalary = () => {
@@ -101,17 +130,14 @@ const JobPage = () => {
             <div className="col-lg-8">
               <div className="job-header">
                 <h1 className="job-title">{job.title}</h1>
-
                 <div className="job-company">
                   <span className="company-icon">🏢</span>
                   {job.company?.name || "Company not specified"}
                 </div>
-
                 <div className="job-location">
                   <span className="location-icon">📍</span>
                   {job.location || "Location not specified"}
                 </div>
-
                 <div className="job-meta-grid">
                   {job.job_type && (
                     <div className="meta-card">
@@ -158,7 +184,6 @@ const JobPage = () => {
                   <span className="section-icon">📝</span>
                   Job Description
                 </h2>
-                import DOMPurify from "dompurify";
                 <div
                   className="job-description"
                   dangerouslySetInnerHTML={{
@@ -187,7 +212,7 @@ const JobPage = () => {
                       <div className="applied-icon">✅</div>
                       <h3 className="applied-title">Application Submitted!</h3>
                       <p className="applied-text">
-                        Your application has been successfully submitted.
+                        You have already applied for this job.
                       </p>
                     </div>
                   ) : countdown ? (
@@ -249,14 +274,16 @@ const JobPage = () => {
                       )}
 
                       <button
-                        className={`apply-btn ${!resume ? "disabled" : ""}`}
-                        disabled={!resume}
-                        onClick={startApply}
+                        className={`apply-btn ${!resume || isSubmitting ? "disabled" : ""}`}
+                        disabled={!resume || isSubmitting}
+                        onClick={handleApply}
                       >
                         <span className="apply-icon">📤</span>
-                        {resume
-                          ? "Submit Application"
-                          : "Upload Resume to Apply"}
+                        {isSubmitting
+                          ? "Submitting..."
+                          : resume
+                            ? "Submit Application"
+                            : "Upload Resume to Apply"}
                       </button>
                     </>
                   )}

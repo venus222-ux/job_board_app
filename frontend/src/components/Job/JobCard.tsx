@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Job } from "../../types/job";
-import React, { memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 
 interface Props {
   job: Job;

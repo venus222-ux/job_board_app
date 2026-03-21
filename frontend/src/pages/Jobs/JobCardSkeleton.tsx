@@ -1,5 +1,4 @@
 // frontend/src/components/Job/JobCardSkeleton.tsx
-import React from "react";
 import styles from "./JobCardSkeleton.module.css";
 
 const JobCardSkeleton = () => {

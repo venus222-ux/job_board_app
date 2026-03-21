@@ -1,5 +1,5 @@
 // Home.jsx - Enhanced with loading state
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import SearchBar from "../components/Search/SearchBar";
 import { useEffect, useState } from "react";

@@ -97,7 +97,7 @@ const JobsList = () => {
     () => (index: number) => {
       const job = jobs[index];
       return (
-        <div className={styles.gridItem}>
+        <div key={job.id} className={styles.gridItem}>
           <JobCard job={job} showStatus={false} />
         </div>
       );

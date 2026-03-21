@@ -11,7 +11,7 @@ interface JobFormProps {
 export default function JobForm({ job, onSubmit, onClose }: JobFormProps) {
   const [form, setForm] = useState<Job>({
     id: job?.id || 0,
-    company_id: job?.company_id || 0,
+    company: job?.company || { id: 0, name: "" }, // default company
     title: job?.title || "",
     description: job?.description || "",
     location: job?.location || "",
@@ -50,17 +50,16 @@ export default function JobForm({ job, onSubmit, onClose }: JobFormProps) {
   }, []);
 
   const handleSubmit = () => {
-    // Backend expects: categories as strings (names), skills as integer IDs, is_remote as boolean
-    const preparedForm = {
+    const preparedForm: Job = {
       ...form,
-      categories: form.categories.map(String),
-      skills: form.skills,
-      salary_min: form.salary_min || null,
-      salary_max: form.salary_max || null,
-      salary_currency: form.salary_currency || null,
-      job_type: form.job_type || null,
-      experience_level: form.experience_level || null,
-      location: form.location || null,
+      categories: form.categories || [],
+      skills: form.skills || [],
+      salary_min: form.salary_min || undefined,
+      salary_max: form.salary_max || undefined,
+      salary_currency: form.salary_currency || undefined,
+      job_type: form.job_type || undefined,
+      experience_level: form.experience_level || undefined,
+      location: form.location || "",
       is_remote: !!form.is_remote,
     };
     onSubmit(preparedForm);
@@ -106,12 +105,15 @@ export default function JobForm({ job, onSubmit, onClose }: JobFormProps) {
         <select
           className="form-select"
           multiple
-          value={form.categories.map(String)}
+          value={(form.categories || []).map((c) => String(c.id))} // or String(c.name) depending on value
           onChange={(e) => {
             const selected = Array.from(e.target.selectedOptions).map(
               (o) => o.value,
             );
-            setForm({ ...form, categories: selected });
+            setForm({
+              ...form,
+              categories: selected.map((name) => ({ id: 0, name })), // id can be 0 or map properly
+            });
           }}
         >
           {allCategories.map((cat) => (
@@ -128,12 +130,20 @@ export default function JobForm({ job, onSubmit, onClose }: JobFormProps) {
         <select
           className="form-select"
           multiple
-          value={form.skills.map(String)}
+          // ✅ Default to empty array if undefined
+          value={(form.skills || []).map((s) => String(s.id))}
           onChange={(e) => {
             const selected = Array.from(e.target.selectedOptions).map((o) =>
               Number(o.value),
             );
-            setForm({ ...form, skills: selected });
+            setForm({
+              ...form,
+              // ✅ Convert selected IDs to Skill objects
+              skills: selected.map((id) => ({
+                id,
+                name: allSkills.find((s) => s.id === id)?.name || "",
+              })),
+            });
           }}
         >
           {allSkills.map((skill) => (

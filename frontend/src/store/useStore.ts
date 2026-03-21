@@ -9,6 +9,7 @@ interface AppState {
   role: Role;
 
   theme: "light" | "dark";
+  user: any | null;
 
   setAuth: (token: string, role: Role) => void;
   logout: () => void;
@@ -28,6 +29,8 @@ export const useStore = create<AppState>((set, get) => ({
   role: (localStorage.getItem("role") as Role) || null,
 
   theme: (localStorage.getItem("theme") as "light" | "dark") || "light",
+
+  user: null,
 
   // 🔐 NEW — login helper
   setAuth: (token, role) => {

@@ -82,3 +82,5 @@ export function CompanyForm({ company, onSubmit, onClose }: CompanyFormProps) {
     </div>
   );
 }
+
+export default CompanyForm;

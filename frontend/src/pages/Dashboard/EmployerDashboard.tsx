@@ -1,44 +1,51 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import API from "../../api";
+import { AxiosResponse } from "axios"; // ✅ Add this
 import CompanyForm from "../../components/employer/CompanyForm";
 import JobForm from "../../components/employer/JobForm";
+import { Link } from "react-router-dom";
 import { Company, Job } from "../../types/job";
 import "./EmployerDashboard.css";
-import { Link } from "react-router-dom";
 
+// ------------------- COMPONENT -------------------
 export default function EmployerDashboard() {
+  // Companies
   const [companies, setCompanies] = useState<Company[]>([]);
   const [company, setCompany] = useState<Company | null>(null);
   const [companyToEdit, setCompanyToEdit] = useState<Company | null>(null);
   const [showCompanyForm, setShowCompanyForm] = useState(false);
 
+  // Jobs
   const [jobs, setJobs] = useState<Job[]>([]);
   const [jobToEdit, setJobToEdit] = useState<Job | null>(null);
   const [showJobForm, setShowJobForm] = useState(false);
+
+  // Loading / pagination
   const [loading, setLoading] = useState(true);
   const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
 
+  // ------------------- EFFECTS -------------------
   useEffect(() => {
     fetchCompanies();
   }, []);
 
   useEffect(() => {
-    if (company) {
-      fetchJobs(currentPage);
-    }
+    if (company) fetchJobs(currentPage);
   }, [company, currentPage]);
 
+  // ------------------- API FUNCTIONS -------------------
   const fetchCompanies = async () => {
     try {
       setLoading(true);
-      const res = await API.get("/employer/companies");
+      const res: AxiosResponse<Company[]> = await API.get(
+        "/employer/companies",
+      );
       setCompanies(res.data);
       if (!company && res.data.length > 0) setCompany(res.data[0]);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load companies");
     } finally {
       setLoading(false);
@@ -48,10 +55,11 @@ export default function EmployerDashboard() {
   const fetchJobs = async (page = 1) => {
     if (!company) return;
     try {
-      const res = await API.get(
+      const res: AxiosResponse<any> = await API.get(
         `/employer/companies/${company.id}/jobs?page=${page}`,
       );
-      const jobsWithData = res.data.data.map((job: Job) => ({
+
+      const jobsWithData: Job[] = res.data.data.map((job: any) => ({
         ...job,
         categories: Array.isArray(job.categories)
           ? job.categories
@@ -63,33 +71,31 @@ export default function EmployerDashboard() {
           : job.skills
             ? JSON.parse(job.skills)
             : [],
+        applications: [],
       }));
 
       setJobs(jobsWithData);
       setCurrentPage(res.data.current_page);
       setLastPage(res.data.last_page);
 
-      // Fetch applications for the current page jobs
+      // fetch applications for jobs
       fetchApplicationsForJobs(jobsWithData);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load jobs");
     }
   };
 
   const fetchApplicationsForJobs = async (jobsList: Job[]) => {
     if (!company) return;
-
     try {
-      const res = await API.get(
+      const res: AxiosResponse<Job[]> = await API.get(
         `/employer/companies/${company.id}/jobs-with-applications`,
       );
       const jobsWithApplications = res.data;
 
       setJobs(
         jobsList.map((job) => {
-          const jobWithApps = jobsWithApplications.find(
-            (j: Job) => j.id === job.id,
-          );
+          const jobWithApps = jobsWithApplications.find((j) => j.id === job.id);
           return {
             ...job,
             applications: jobWithApps?.applications || [],
@@ -101,14 +107,17 @@ export default function EmployerDashboard() {
     }
   };
 
+  // ------------------- HANDLERS -------------------
   const handleCompanySubmit = async (formData: FormData, isUpdate: boolean) => {
     try {
-      let res;
+      let res: AxiosResponse<Company>;
       if (isUpdate && companyToEdit) {
         res = await API.post(
           `/employer/companies/${companyToEdit.id}`,
           formData,
-          { headers: { "Content-Type": "multipart/form-data" } },
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          },
         );
         setCompanies(
           companies.map((c) => (c.id === companyToEdit.id ? res.data : c)),
@@ -129,35 +138,46 @@ export default function EmployerDashboard() {
   };
 
   const handleJobSubmit = async (form: Job) => {
+    if (!company) return;
+
+    // Format payload for Laravel validation
+    const payload = {
+      title: form.title,
+      description: form.description,
+      location: form.location,
+      status: form.status || "draft", // required
+      categories: form.categories?.map((c) => c.name) || [],
+      skills: form.skills?.map((s) => s.id) || [],
+      job_type: form.job_type || null,
+      salary_min: form.salary_min || null,
+      salary_max: form.salary_max || null,
+      salary_currency: form.salary_currency || null,
+      salary_type: form.salary_type || null,
+      is_remote: !!form.is_remote,
+      experience_level: form.experience_level || "junior",
+    };
+
     try {
-      if (!company) return;
+      let res: AxiosResponse<Job>;
       if (jobToEdit) {
-        const res = await API.put(`/employer/jobs/${jobToEdit.id}`, form);
+        res = await API.put(`/employer/jobs/${jobToEdit.id}`, payload);
         setJobs(jobs.map((j) => (j.id === jobToEdit.id ? res.data : j)));
         toast.success("Job updated successfully");
       } else {
-        const res = await API.post(
-          `/employer/companies/${company.id}/jobs`,
-          form,
-        );
+        res = await API.post(`/employer/companies/${company.id}/jobs`, payload);
         setJobs([res.data, ...jobs]);
         toast.success("Job created successfully");
       }
       setShowJobForm(false);
       setJobToEdit(null);
-    } catch {
+    } catch (error: any) {
+      console.error("Job submit error:", error.response?.data);
       toast.error("Failed to save job");
     }
   };
 
   const handleDeleteCompany = async (companyId: number) => {
-    if (
-      !confirm(
-        "Are you sure you want to delete this company? This will also delete all associated jobs.",
-      )
-    )
-      return;
-
+    if (!confirm("Are you sure you want to delete this company?")) return;
     try {
       await API.delete(`/employer/companies/${companyId}`);
       setCompanies(companies.filter((c) => c.id !== companyId));
@@ -172,7 +192,6 @@ export default function EmployerDashboard() {
 
   const handleDeleteJob = async (jobId: number) => {
     if (!confirm("Are you sure you want to delete this job?")) return;
-
     try {
       await API.delete(`/employer/jobs/${jobId}`);
       setJobs(jobs.filter((j) => j.id !== jobId));
@@ -186,33 +205,25 @@ export default function EmployerDashboard() {
     try {
       await API.patch(`/applications/${appId}/view`);
       toast.success("Marked as viewed");
+      if (!company) return;
 
-      // Refresh applications
-      if (company) {
-        const res = await API.get(
-          `/employer/companies/${company.id}/jobs-with-applications`,
-        );
-        const jobsWithApplications = res.data;
+      const res: AxiosResponse<Job[]> = await API.get(
+        `/employer/companies/${company.id}/jobs-with-applications`,
+      );
+      const jobsWithApplications = res.data;
 
-        setJobs(
-          jobs.map((job) => {
-            const jobWithApps = jobsWithApplications.find(
-              (j: Job) => j.id === job.id,
-            );
-            return {
-              ...job,
-              applications: jobWithApps?.applications || [],
-            };
-          }),
-        );
-      }
+      setJobs(
+        jobs.map((job) => {
+          const jobWithApps = jobsWithApplications.find((j) => j.id === job.id);
+          return {
+            ...job,
+            applications: jobWithApps?.applications || [],
+          };
+        }),
+      );
     } catch {
       toast.error("Failed to mark as viewed");
     }
-  };
-
-  const toggleApplications = (jobId: number) => {
-    setExpandedJobId(expandedJobId === jobId ? null : jobId);
   };
 
   const downloadResume = async (id: number) => {
@@ -221,17 +232,14 @@ export default function EmployerDashboard() {
         responseType: "blob",
       });
 
-      // Get filename from Content-Disposition header or use default
       const contentDisposition = response.headers["content-disposition"];
       let filename = "resume.pdf";
 
       if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(
+        const match = contentDisposition.match(
           /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         );
-        if (filenameMatch && filenameMatch[1]) {
-          filename = filenameMatch[1].replace(/['"]/g, "");
-        }
+        if (match && match[1]) filename = match[1].replace(/['"]/g, "");
       }
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -244,18 +252,21 @@ export default function EmployerDashboard() {
       window.URL.revokeObjectURL(url);
 
       toast.success("Resume download started");
-    } catch (error) {
-      console.error("Download failed:", error);
+    } catch {
       toast.error("Failed to download resume");
     }
   };
 
-  // Advanced pagination with page numbers
-  const getPageNumbers = () => {
+  const toggleApplications = (jobId: number) => {
+    setExpandedJobId(expandedJobId === jobId ? null : jobId);
+  };
+
+  // ------------------- PAGINATION -------------------
+  const getPageNumbers = (): (number | string)[] => {
     const delta = 2;
-    const range = [];
-    const rangeWithDots = [];
-    let l;
+    const range: number[] = [];
+    const rangeWithDots: (number | string)[] = [];
+    let l: number | undefined;
 
     for (let i = 1; i <= lastPage; i++) {
       if (
@@ -269,11 +280,8 @@ export default function EmployerDashboard() {
 
     range.forEach((i) => {
       if (l) {
-        if (i - l === 2) {
-          rangeWithDots.push(l + 1);
-        } else if (i - l !== 1) {
-          rangeWithDots.push("...");
-        }
+        if (i - l === 2) rangeWithDots.push(l + 1);
+        else if (i - l !== 1) rangeWithDots.push("...");
       }
       rangeWithDots.push(i);
       l = i;
@@ -282,7 +290,8 @@ export default function EmployerDashboard() {
     return rangeWithDots;
   };
 
-  if (loading) {
+  // ------------------- RENDER -------------------
+  if (loading)
     return (
       <div className="employer-dashboard">
         <div
@@ -303,24 +312,20 @@ export default function EmployerDashboard() {
               style={{
                 width: "60px",
                 height: "60px",
-                border: "4px solid rgba(255, 255, 255, 0.3)",
+                border: "4px solid rgba(255,255,255,0.3)",
                 borderRadius: "50%",
                 borderTopColor: "white",
                 animation: "spin 1s linear infinite",
                 margin: "0 auto 1.5rem",
               }}
-            ></div>
-            <p
-              className="loading-text"
-              style={{ fontSize: "1.2rem", opacity: 0.8 }}
-            >
+            />
+            <p style={{ fontSize: "1.2rem", opacity: 0.8 }}>
               Loading dashboard...
             </p>
           </div>
         </div>
       </div>
     );
-  }
 
   return (
     <div className="employer-dashboard">
@@ -501,7 +506,9 @@ export default function EmployerDashboard() {
 
                       <div className="job-meta">
                         {job.categories && job.categories.length > 0 && (
-                          <span className="job-badge">{job.categories[0]}</span>
+                          <span className="job-badge">
+                            {job.categories[0].name}
+                          </span>
                         )}
                         {job.skills &&
                           job.skills.length > 0 &&
