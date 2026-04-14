@@ -1,5 +1,5 @@
 // frontend/src/pages/Jobs/JobList.tsx
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { VirtuosoGrid } from "react-virtuoso";
 
@@ -11,7 +11,7 @@ import JobCardSkeleton from "./JobCardSkeleton";
 import { Job } from "../../types/job";
 import { useDebounce } from "../../hooks/useDebounce";
 
-import styles from "./JobsList.module.css"; // CSS Module
+import styles from "./JobsList.module.css";
 
 const JobsList = () => {
   const [params, setParams] = useSearchParams();
@@ -34,7 +34,7 @@ const JobsList = () => {
     sort: params.get("sort") || "relevance",
   });
 
-  // --- Fetch jobs ---
+  // ---------------- FETCH JOBS ----------------
   const fetchJobs = async () => {
     setLoading(true);
     try {
@@ -47,7 +47,7 @@ const JobsList = () => {
         salary_min: filters.salary_min,
         salary_max: filters.salary_max,
         sort: filters.sort,
-        skills: filters.skills.filter(Boolean).join(","),
+        skills: filters.skills.join(","),
         category: filters.category.join(","),
       });
 
@@ -61,67 +61,59 @@ const JobsList = () => {
     }
   };
 
-  // --- Sync filters & search to URL ---
   useEffect(() => {
-    setParams({
-      query: searchQuery,
-      location: filters.location,
-      job_type: filters.job_type,
-      experience_level: filters.experience_level,
-      is_remote: String(filters.is_remote),
-      salary_min: filters.salary_min,
-      salary_max: filters.salary_max,
-      sort: filters.sort,
-      skills: filters.skills.join(","),
-      category: filters.category.join(","),
-    });
-  }, [searchQuery, filters, setParams]);
+    const timeout = setTimeout(() => {
+      setParams({
+        query: searchQuery,
+        location: filters.location,
+        job_type: filters.job_type,
+        experience_level: filters.experience_level,
+        is_remote: String(filters.is_remote),
+        salary_min: filters.salary_min,
+        salary_max: filters.salary_max,
+        sort: filters.sort,
+        skills: filters.skills.join(","),
+        category: filters.category.join(","),
+      });
+    }, 300);
 
-  // --- Fetch jobs on debounced search or filters ---
+    return () => clearTimeout(timeout);
+  }, [searchQuery, filters, setParams]);
+  // ---------------- FETCH ON CHANGE ----------------
   useEffect(() => {
     fetchJobs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery, filters]);
 
-  // --- Memoize skeletons ---
-  const renderSkeletons = useMemo(() => {
-    return Array.from({ length: 6 }).map((_, i) => (
-      <div key={i} className={styles.gridItem}>
-        <JobCardSkeleton />
-      </div>
-    ));
-  }, []);
-
-  // --- Memoize Virtuoso item content to prevent re-renders ---
-  const itemContent = useMemo(
-    () => (index: number) => {
-      const job = jobs[index];
-      return (
-        <div key={job.id} className={styles.gridItem}>
-          <JobCard job={job} showStatus={false} />
-        </div>
-      );
-    },
-    [jobs],
-  );
+  // ---------------- SKELETONS ----------------
+  const renderSkeletons = Array.from({ length: 6 }).map((_, i) => (
+    <div key={i} className={styles.gridItem}>
+      <JobCardSkeleton />
+    </div>
+  ));
 
   return (
     <div className={styles.container}>
+      {/* SEARCH */}
       <div className={styles.searchWrapper}>
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
 
       <div className={styles.mainLayout}>
+        {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <FiltersSidebar filters={filters} setFilters={setFilters} />
         </aside>
 
+        {/* CONTENT */}
         <main className={styles.content}>
           <h2 className={styles.title}>💼 Job Listings</h2>
 
+          {/* LOADING */}
           {loading ? (
             <div className={styles.gridContainer}>{renderSkeletons}</div>
           ) : jobs.length === 0 ? (
+            /* EMPTY STATE */
             <div className={styles.emptyState}>
               <img
                 src="/illustrations/empty-jobs.svg"
@@ -131,17 +123,32 @@ const JobsList = () => {
               <p>No jobs match your criteria. Try adjusting your filters.</p>
             </div>
           ) : (
+            /* VIRTUALIZED GRID */
             <div style={{ height: "75vh", width: "100%" }}>
               <VirtuosoGrid
-                totalCount={jobs.length}
-                useWindowScroll
-                itemContent={itemContent}
+                data={jobs}
+                overscan={200}
+                itemContent={(index, job) => {
+                  return <JobCard job={job} showStatus={false} />;
+                }}
                 listClassName={styles.gridContainer}
                 components={{
-                  Item: ({ children, ...props }) => (
-                    <div {...props} className={styles.gridItem}>
-                      {children}
-                    </div>
+                  List: React.forwardRef(
+                    ({ style, children, ...props }, ref) => (
+                      <div
+                        ref={ref}
+                        {...props}
+                        style={{
+                          ...style,
+                          display: "grid",
+                          gridTemplateColumns:
+                            "repeat(auto-fill, minmax(320px, 1fr))",
+                          gap: "1rem",
+                        }}
+                      >
+                        {children}
+                      </div>
+                    ),
                   ),
                 }}
               />
