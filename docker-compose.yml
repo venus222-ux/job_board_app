@@ -1,5 +1,4 @@
 services:
-  # Redis Service
   redis:
     image: redis:7
     container_name: jobboard_redis
@@ -9,7 +8,6 @@ services:
     volumes:
       - redis_data:/data
 
-  # Elasticsearch Service
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.19.10
     container_name: jobboard_elasticsearch
@@ -33,23 +31,25 @@ services:
       - es_data:/usr/share/elasticsearch/data
     restart: unless-stopped
 
-  # Horizon Worker Service
-  # Horizon Worker Service
   laravel_worker:
-     build:
-       context: ./backend
-       dockerfile: Dockerfile
-     container_name: jobboard_worker
-     restart: unless-stopped
-     volumes:
-       - ./backend:/var/www/html
-     depends_on:
-       - redis
-     env_file:
-       - ./backend/.env # 💡 Pulls ALL your mail and app settings automatically
-     environment:
-       - REDIS_HOST=jobboard_redis # Matches your container_name for redis
-       - REDIS_PORT=6379
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jobboard_worker
+    restart: unless-stopped
+    command: php artisan queue:work --queue=emails,default
+    volumes:
+      - ./backend:/var/www/html
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
+    env_file:
+      - ./backend/.env
+    environment:
+      - REDIS_HOST=jobboard_redis
+      - REDIS_PORT=6379
+      - DB_HOST=host.docker.internal
 
 volumes:
   redis_data:

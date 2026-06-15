@@ -29,18 +29,16 @@ class EmployerApplicationController extends Controller
             ->get();
     }
 
-    public function markViewed($id)
-    {
-        $application = Application::findOrFail($id);
-        $application->update(['viewed_at' => now()]);
+  public function markViewed($id)
+{
+    $application = Application::findOrFail($id);
+    $application->update(['viewed_at' => now()]);
 
-        // 📧 Email candidate
-        Mail::to($application->candidate->email)
-            ->onQueue('emails')
-            ->queue(new ResumeDownloadedMail($application));
+    Mail::to($application->candidate->email)
+        ->queue((new ResumeDownloadedMail($application))->onQueue('emails'));
 
-        return response()->json(['message' => 'Marked as viewed']);
-    }
+    return response()->json(['message' => 'Marked as viewed']);
+}
 
     public function jobsWithApplications($companyId)
     {
