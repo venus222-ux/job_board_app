@@ -2,95 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Company\StoreCompanyRequest;
+use App\Http\Requests\Company\UpdateCompanyRequest;
+use App\Services\Company\CompanyService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
-    // Public: list all companies
+    public function __construct(
+        private CompanyService $companyService
+    ) {}
+
+    // Public: list companies
     public function index()
     {
         return response()->json(
-            Company::select('id', 'name', 'slug', 'description', 'logo', 'website')
-                ->latest()
-                ->get()
+            $this->companyService->listCompanies()
         );
     }
 
-    // Public: get company by slug
+    // Public: show company by slug
     public function show($slug)
     {
-        $company = Company::where('slug', $slug)->firstOrFail();
-        return response()->json($company);
+        return response()->json(
+            $this->companyService->getBySlug($slug)
+        );
     }
 
-    // Employer: list all companies for current user
+    // Employer: list own companies
     public function employerIndex()
     {
-        $companies = Company::where('user_id', Auth::id())->get();
-        return response()->json($companies);
+        return response()->json(
+            $this->companyService->getEmployerCompanies(Auth::id())
+        );
     }
 
-    // Employer: create company
-    public function store(Request $request)
+    // Employer: create
+    public function store(StoreCompanyRequest $request)
     {
-        $request->validate([
-            'name' => 'required|unique:companies',
-            'description' => 'nullable',
-            'website' => 'nullable|url',
-            'logo' => 'nullable|image|max:2048',
-        ]);
-
-        $logoPath = $request->file('logo')?->store('logos', 'public');
-
-        $company = Company::create([
-            'user_id' => Auth::id(),
-            'name' => $request->name,
-            'description' => $request->description,
-            'website' => $request->website,
-            'logo' => $logoPath,
-        ]);
-
-        return response()->json($company);
+        return response()->json(
+            $this->companyService->createCompany(
+                $request->validated(),
+                Auth::id(),
+                $request->file('logo')
+            )
+        );
     }
 
-    // Employer: update company
-    public function update(Request $request, $id)
+    // Employer: update
+    public function update(UpdateCompanyRequest $request, $id)
     {
-        $company = Company::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
-
-        $request->validate([
-            'name' => 'required|unique:companies,name,' . $company->id,
-            'description' => 'nullable',
-            'website' => 'nullable|url',
-            'logo' => 'nullable|image|max:2048',
-        ]);
-
-        if ($request->hasFile('logo')) {
-            if ($company->logo) Storage::disk('public')->delete($company->logo);
-            $company->logo = $request->file('logo')->store('logos', 'public');
-        }
-
-        $company->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'website' => $request->website,
-        ]);
-
-        return response()->json($company);
+        return response()->json(
+            $this->companyService->updateCompany(
+                $id,
+                $request->validated(),
+                Auth::id(),
+                $request->file('logo')
+            )
+        );
     }
 
-    // Employer: delete company
+    // Employer: delete
     public function destroy($id)
     {
-        $company = Company::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+        $this->companyService->deleteCompany($id, Auth::id());
 
-        if ($company->logo) Storage::disk('public')->delete($company->logo);
-
-        $company->delete();
-
-        return response()->json(['message' => 'Company deleted']);
+        return response()->json([
+            'message' => 'Company deleted'
+        ]);
     }
 }

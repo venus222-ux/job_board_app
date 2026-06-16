@@ -38,7 +38,7 @@ Route::get('/jobs/id/{id}', [JobController::class, 'showById']);
 Route::get('/jobs/{job:slug}', [JobController::class, 'show']); // candidate-friendly
 
 // Admin dashboard
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+Route::get('/admin/dashboard', [AdminController::class, 'index'])
     ->middleware(['auth:api', 'role:admin']);
 
 // Public lookup

@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     container_name: jobboard_worker
     restart: unless-stopped
-    command: php artisan queue:work --queue=emails,default
+    command: php artisan horizon # ◄ Changed from queue:work
     volumes:
       - ./backend:/var/www/html
     extra_hosts:

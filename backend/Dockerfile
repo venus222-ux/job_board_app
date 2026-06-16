@@ -22,6 +22,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copy the supervisor config
+# This path is relative to the backend/ build context folder
 COPY ./docker/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Start Supervisor
