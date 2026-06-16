@@ -181,17 +181,26 @@ class JobController extends Controller
         return response()->json($jobs);
     }
 
-    // -----------------------------
-    // Public: show a job by ID or slug
-    // -----------------------------
-    // Public: show job by slug
-    public function show(Job $job)
-    {
-       $job->load(['company', 'skills']);
+public function show($slug)
+{
+    // Find the job regardless of authentication
+    $job = Job::where('slug', $slug)->firstOrFail();
 
-       return response()->json($job);
+    $alreadyApplied = false;
+
+    // Use auth('api')->user() to check if a token is present and valid
+    // without forcing the request through 'auth:api' middleware
+    $user = auth('api')->user();
+
+    if ($user) {
+        $alreadyApplied = $job->applications()->where('user_id', $user->id)->exists();
     }
 
+    return response()->json([
+        'job' => $job,
+        'already_applied' => $alreadyApplied
+    ]);
+}
     // -----------------------------
     // Internal/admin: show job by ID
     // -----------------------------

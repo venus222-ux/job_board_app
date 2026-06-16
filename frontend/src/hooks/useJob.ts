@@ -11,14 +11,19 @@ export const useJob = (slug?: string) => {
   const [countdown, setCountdown] = useState<string | null>(null);
 
   // Fetch job details
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(true);
-    API.get(`/jobs/${slug}`)
-      .then((res) => setJob(res.data))
-      .catch(() => toast.error("Failed to load job"))
-      .finally(() => setLoading(false));
-  }, [slug]);
+// In hooks/useJob.ts
+useEffect(() => {
+  if (!slug) return;
+  setLoading(true);
+  
+  API.get(`/jobs/${slug}`)
+    .then((res) => {
+      setJob(res.data.job); // Updated to match the new response structure
+      setApplied(res.data.already_applied); // Set persistence here!
+    })
+    .catch(() => toast.error("Failed to load job"))
+    .finally(() => setLoading(false));
+}, [slug]);
 
   // Submit application
   const startApply = async () => {
