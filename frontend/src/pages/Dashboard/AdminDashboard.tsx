@@ -17,6 +17,12 @@ import axios from "axios";
 import styles from "./AdminDashboard.module.css";
 import Button from "../../components/Button";
 
+import type {
+  DashboardData,
+  Category,
+  Skill,
+} from "@/types";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,54 +36,7 @@ ChartJS.register(
   Filler,
 );
 
-type JobView = {
-  _id: string;
-  views: number;
-};
 
-type DashboardData = {
-  totalUsers: number;
-  totalCompanies: number;
-  totalJobs: number;
-  totalApplications: number;
-  activeJobs: number;
-  pendingApplications: number;
-  recentUsers: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    created_at: string;
-  }[];
-  recentApplications: {
-    id: number;
-    candidate: { name: string };
-    job: { title: string };
-    created_at: string;
-    viewed_at: string | null;
-  }[];
-  jobStatusDistribution: { status: string; count: number }[];
-  userRoleDistribution: { role: string; count: number }[];
-  monthlyApplications: { month: string; count: number }[];
-  jobTypeDistribution: { type: string; count: number }[];
-  recentJobViews: JobView[];
-};
-
-type Category = {
-  id: number;
-  name: string;
-  created_at?: string;
-  updated_at?: string;
-};
-
-type Skill = {
-  id: number;
-  name: string;
-  category_id?: number;
-  created_at?: string;
-  updated_at?: string;
-  category?: Category;
-};
 
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -240,11 +199,11 @@ export default function AdminDashboard() {
     setModalMode("edit");
     setCurrentItem(item);
     setItemName(item.name);
-    if ("category_id" in item) {
-      setSelectedCategoryId(item.category_id || "");
-    } else {
-      setSelectedCategoryId("");
-    }
+if ("category_id" in item) {
+  setSelectedCategoryId(item.category_id ?? "");
+} else {
+  setSelectedCategoryId("");
+}
     setShowModal(true);
   };
 

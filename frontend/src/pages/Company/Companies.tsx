@@ -1,11 +1,12 @@
-//src/pages/Company/Companies.tsx
 import { useEffect } from "react";
 import API from "../../api";
 import { useCompanyStore } from "../../store/companyStore";
 import { CompanyForm } from "../Company/CompanyForm";
 
+import type { Company } from "@/types";
+
 export interface CompanyFormProps {
-  company?: any;
+  company?: Company; 
   onSubmit: (formData: FormData, isUpdate: boolean) => void;
   onClose: () => void;
 }
@@ -14,7 +15,7 @@ const EmployerDashboard = () => {
   const { company, setCompany } = useCompanyStore();
 
   useEffect(() => {
-    API.get("/employer/company")
+    API.get<Company>("/employer/company")
       .then((res) => setCompany(res.data))
       .catch(() => {});
   }, [setCompany]);
@@ -31,14 +32,18 @@ const EmployerDashboard = () => {
               width={100}
             />
           )}
+
           <h4>{company.name}</h4>
           <p>{company.description}</p>
-          <small>Slug: /companies/{company.slug}</small>
+
+          {company.slug && (
+            <small>Slug: /companies/{company.slug}</small>
+          )}
         </div>
       )}
 
       <CompanyForm
-        company={company} // optional, can be undefined
+        company={company}
         onSubmit={(formData, isUpdate) => {
           if (isUpdate) {
             API.post(`/companies/${company?.id}`, formData)

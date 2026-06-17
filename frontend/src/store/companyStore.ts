@@ -1,14 +1,6 @@
 import { create } from "zustand";
 
-export interface Company {
-  id: number;
-  name: string;
-  description?: string;
-  website?: string;
-  logo?: string;
-  slug: string;
-}
-
+import type { Company } from "@/types";
 interface CompanyState {
   companies: Company[];
   company: Company | null;

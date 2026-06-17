@@ -3,16 +3,9 @@ import { useEffect, useState } from "react";
 import API from "../api";
 import { toast } from "react-toastify";
 
-interface Application {
-  id: number;
-  created_at: string;
-  viewed_at?: string;
-  candidate: {
-    name: string;
-    email: string;
-  };
-  resume_path: string;
-}
+import type {
+  Application
+} from "@/types";
 
 export default function EmployerJobApplications({ jobId }: { jobId: number }) {
   const [apps, setApps] = useState<Application[]>([]);

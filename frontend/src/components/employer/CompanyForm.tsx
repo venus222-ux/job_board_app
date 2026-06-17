@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
-import { Company } from "../../types/job";
+import type { Company } from "@/types";
 
 interface CompanyFormProps {
   company?: Company | null;

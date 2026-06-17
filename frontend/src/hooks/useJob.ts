@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import API from "../api"; // axios instance
-import { Job } from "../types/job";
+import type { Job } from "@/types";
 import { toast } from "react-toastify";
 
 export const useJob = (slug?: string) => {

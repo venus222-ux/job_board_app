@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../../api";
-import { Application } from "../../types/job";
+import type { Application } from "@/types";
 
 export default function CandidateDashboard() {
   const [apps, setApps] = useState<Application[]>([]);

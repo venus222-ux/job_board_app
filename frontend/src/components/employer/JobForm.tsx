@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../../api";
-import { Job, Skill, Category } from "../../types/job";
+import type { Job,Skill,Category } from "@/types";
 
 interface JobFormProps {
   job?: Job | null;

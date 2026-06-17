@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios"; // ✅ Add this
 import CompanyForm from "../../components/employer/CompanyForm";
 import JobForm from "../../components/employer/JobForm";
 import { Link } from "react-router-dom";
-import { Company, Job } from "../../types/job";
+import type { Company,Job } from "@/types";
 import "./EmployerDashboard.css";
 
 // ------------------- COMPONENT -------------------

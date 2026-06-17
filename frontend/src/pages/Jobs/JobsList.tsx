@@ -1,5 +1,10 @@
 // frontend/src/pages/Jobs/JobList.tsx
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  CSSProperties,
+  forwardRef,
+} from "react";
 import { useSearchParams } from "react-router-dom";
 import { VirtuosoGrid } from "react-virtuoso";
 
@@ -8,10 +13,16 @@ import JobCard from "../../components/Job/JobCard";
 import SearchBar from "../../components/Search/SearchBar";
 import FiltersSidebar from "../../components/Search/FiltersSidebar";
 import JobCardSkeleton from "./JobCardSkeleton";
-import { Job } from "../../types/job";
+import type { Job } from "@/types";
 import { useDebounce } from "../../hooks/useDebounce";
 
 import styles from "./JobsList.module.css";
+
+// ✅ Virtuoso List typing fix
+type ListProps = {
+  style?: CSSProperties;
+  children?: React.ReactNode;
+} & React.HTMLAttributes<HTMLDivElement>;
 
 const JobsList = () => {
   const [params, setParams] = useSearchParams();
@@ -19,7 +30,10 @@ const JobsList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [searchQuery, setSearchQuery] = useState(params.get("query") || "");
+  const [searchQuery, setSearchQuery] = useState(
+    params.get("query") || ""
+  );
+
   const debouncedQuery = useDebounce(searchQuery, 400);
 
   const [filters, setFilters] = useState({
@@ -51,8 +65,7 @@ const JobsList = () => {
         category: filters.category.join(","),
       });
 
-      const jobsData = Array.isArray(res.data.data) ? res.data.data : [];
-      setJobs(jobsData);
+      setJobs((res.data.data ?? []) as Job[]);
     } catch (err) {
       console.error("Error fetching jobs:", err);
       setJobs([]);
@@ -61,6 +74,7 @@ const JobsList = () => {
     }
   };
 
+  // ---------------- SYNC URL PARAMS ----------------
   useEffect(() => {
     const timeout = setTimeout(() => {
       setParams({
@@ -79,6 +93,7 @@ const JobsList = () => {
 
     return () => clearTimeout(timeout);
   }, [searchQuery, filters, setParams]);
+
   // ---------------- FETCH ON CHANGE ----------------
   useEffect(() => {
     fetchJobs();
@@ -111,9 +126,10 @@ const JobsList = () => {
 
           {/* LOADING */}
           {loading ? (
-            <div className={styles.gridContainer}>{renderSkeletons}</div>
+            <div className={styles.gridContainer}>
+              {renderSkeletons}
+            </div>
           ) : jobs.length === 0 ? (
-            /* EMPTY STATE */
             <div className={styles.emptyState}>
               <img
                 src="/illustrations/empty-jobs.svg"
@@ -123,17 +139,16 @@ const JobsList = () => {
               <p>No jobs match your criteria. Try adjusting your filters.</p>
             </div>
           ) : (
-            /* VIRTUALIZED GRID */
             <div style={{ height: "75vh", width: "100%" }}>
               <VirtuosoGrid
                 data={jobs}
                 overscan={200}
-                itemContent={(index, job) => {
-                  return <JobCard job={job} showStatus={false} />;
-                }}
+               itemContent={(_index, job) => (
+                 <JobCard job={job} showStatus={false} />
+               )}
                 listClassName={styles.gridContainer}
                 components={{
-                  List: React.forwardRef(
+                  List: forwardRef<HTMLDivElement, ListProps>(
                     ({ style, children, ...props }, ref) => (
                       <div
                         ref={ref}
@@ -148,7 +163,7 @@ const JobsList = () => {
                       >
                         {children}
                       </div>
-                    ),
+                    )
                   ),
                 }}
               />
